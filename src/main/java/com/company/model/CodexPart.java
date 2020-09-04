@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 public class CodexPart {
 
+    String numberId;
     String number;
     String name;
     List<Section> sections;

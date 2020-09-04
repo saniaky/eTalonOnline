@@ -9,6 +9,10 @@ public final class ParsingUtils {
         return Jsoup.parse(html).text();
     }
 
+    public static boolean isEmptyElement(Element element) {
+        return element.text().isBlank();
+    }
+
     public static boolean isCodexPart(Element element) {
         return "part".equals(element.className()) && !element.text().isBlank();
     }

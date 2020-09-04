@@ -1,9 +1,6 @@
 package com.company;
 
-import com.company.model.Chapter;
-import com.company.model.CodexPart;
-import com.company.model.Section;
-import com.company.model.UPK;
+import com.company.model.*;
 import javafx.util.Pair;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.company.ParsingUtils.*;
-import static com.company.SizeTest.validateUPKSize;
+import static com.company.SizeTest.validateUPK;
 
 @Slf4j
 public class Main {
@@ -34,7 +31,7 @@ public class Main {
         Elements elements = doc.selectFirst(".Section1").children();
         // 710 - 4410
         UPK upk = buildUPK(elements);
-        validateUPKSize(upk);
+        validateUPK(upk);
         log.info("Done.");
     }
 
@@ -46,6 +43,7 @@ public class Main {
 
     private static List<CodexPart> buildCodexParts(Elements elements) {
         var codexParts = new ArrayList<CodexPart>();
+
         for (int i = 0; i < elements.size(); i++) {
             var element = elements.get(i);
             if (isCodexPart(element)) {
@@ -61,6 +59,7 @@ public class Main {
                 codexParts.add(codexPart);
             }
         }
+
         return codexParts;
     }
 
@@ -71,15 +70,15 @@ public class Main {
         for (int i = offset; i < elements.size(); i++) {
             Element element = elements.get(i);
             if (isSection(element)) {
-                String[] title = element.html().split("<br>");
+                String numberId = element.attr("id");
+                String name = stripHTML(element.html().split("<br>")[1]);
                 var pair = buildChapters(elements, i + 1);
-                var chapters = pair.getValue();
                 i = pair.getKey();
                 Section section = Section.builder()
-                        .numberId(element.attr("id"))
-                        .number(stripHTML(title[0]))
-                        .name(stripHTML(title[1]))
-                        .chapters(chapters)
+                        .numberId(numberId)
+                        .number("Раздел " + numberId)
+                        .name(name)
+                        .chapters(pair.getValue())
                         .build();
                 sections.add(section);
             } else if (isCodexPart(element)) { // if going up - stop
@@ -99,31 +98,52 @@ public class Main {
         for (int i = offset; i < elements.size(); i++) {
             Element element = elements.get(i);
             if (isChapter(element)) {
-                String[] title = element.html().split("<br>");
-                String number = stripHTML(element.attr("id"));
-                String name = stripHTML(title[1]);
+                String numberId = stripHTML(element.attr("id"));
+                String name = stripHTML(element.html().split("<br>")[1]);
+                var pair = buildArticles(elements, i + 1);
+                i = pair.getKey();
                 Chapter chapter = Chapter.builder()
-                        .numberId(number)
-                        .number("ГЛАВА " + number)
+                        .numberId(numberId)
+                        .number("ГЛАВА " + numberId)
                         .name(name)
-                        .articles(Collections.emptyList())
+                        .articles(pair.getValue())
                         .build();
                 chapters.add(chapter);
             } else if (isCodexPart(element) || isSection(element)) { // if going up - stop
                 newOffset = i - 1;
                 break;
             } else {
-                // todo - remove later
-                if (!isArticle(element)
-                        && !isArticlePart(element)
-                        && !isArticleParagraph(element)
-                        && !isComment(element)
-                        && !isNote(element)) {
-                    log.info("Chapter - trash element?");
-                }
+                log.info("Chapter - trash element?");
             }
         }
         return new Pair<>(newOffset, chapters);
+    }
+
+    private static Pair<Integer, List<Article>> buildArticles(Elements elements, int offset) {
+        int newOffset = offset;
+        var articles = new ArrayList<Article>();
+
+        for (int i = offset; i < elements.size(); i++) {
+            Element element = elements.get(i);
+            if (isArticle(element)) {
+                String number = stripHTML(element.attr("id"));
+                String name = element.text().replaceAll("Статья [0-9]+.", "").trim();
+                Article article = Article.builder()
+                        .numberId(number)
+                        .number("Статья " + number)
+                        .name(name)
+                        .text("")
+                        .articleParts(Collections.emptyList())
+                        .articleParagraphs(Collections.emptyList())
+                        .build();
+                articles.add(article);
+            } else if (isCodexPart(element) || isSection(element) || isChapter(element)) {
+                newOffset = i - 1;
+                break;
+            }
+        }
+
+        return new Pair<>(newOffset, articles);
     }
 
 }

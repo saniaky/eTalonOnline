@@ -5,6 +5,7 @@ package com.company.model;
  */
 public class ArticlePart {
 
+    String numberId;
     String number;
     String text;
 

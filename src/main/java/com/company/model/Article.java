@@ -16,6 +16,7 @@ import java.util.List;
 @Builder
 public class Article {
 
+    String numberId;
     String number;
     String name;
 

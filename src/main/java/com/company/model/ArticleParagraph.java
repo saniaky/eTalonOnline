@@ -7,6 +7,7 @@ import java.util.List;
  */
 public class ArticleParagraph {
 
+    String numberId;
     String number;
     String text;
     List<ArticlePart> articleParagraphs; // optional
