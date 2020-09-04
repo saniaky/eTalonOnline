@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 public class Section {
 
+    String numberId;
     String number;
     String name;
     List<Chapter> chapters;

@@ -5,6 +5,7 @@ import com.company.model.CodexPart;
 import com.company.model.Section;
 import com.company.model.UPK;
 import javafx.util.Pair;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,15 +18,23 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.company.ParsingUtils.*;
+import static com.company.SizeTest.validateUPKSize;
 
 @Slf4j
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        Document doc = Jsoup.connect("https://etalonline.by/document/?regnum=HK9900295&q_id=").get();
+        new Main().start();
+    }
+
+    @SneakyThrows
+    public void start() {
+        // Document doc = Jsoup.connect("https://etalonline.by/document/?regnum=HK9900295&q_id=").get();
+        Document doc = Jsoup.parse(getClass().getClassLoader().getResourceAsStream("kodeks.html"), "UTF-8", "");
         Elements elements = doc.selectFirst(".Section1").children();
+        // 710 - 4410
         UPK upk = buildUPK(elements);
-        // db.save(upk);
+        validateUPKSize(upk);
         log.info("Done.");
     }
 
@@ -67,6 +76,7 @@ public class Main {
                 var chapters = pair.getValue();
                 i = pair.getKey();
                 Section section = Section.builder()
+                        .numberId(element.attr("id"))
                         .number(stripHTML(title[0]))
                         .name(stripHTML(title[1]))
                         .chapters(chapters)
@@ -75,6 +85,8 @@ public class Main {
             } else if (isCodexPart(element)) { // if going up - stop
                 newOffset = i - 1;
                 break;
+            } else {
+                log.info("Section - trash element {}", element);
             }
         }
         return new Pair<>(newOffset, sections);
@@ -88,15 +100,27 @@ public class Main {
             Element element = elements.get(i);
             if (isChapter(element)) {
                 String[] title = element.html().split("<br>");
+                String number = stripHTML(element.attr("id"));
+                String name = stripHTML(title[1]);
                 Chapter chapter = Chapter.builder()
-                        .number(stripHTML(title[0]))
-                        .name(stripHTML(title[1]))
+                        .numberId(number)
+                        .number("ГЛАВА " + number)
+                        .name(name)
                         .articles(Collections.emptyList())
                         .build();
                 chapters.add(chapter);
             } else if (isCodexPart(element) || isSection(element)) { // if going up - stop
                 newOffset = i - 1;
                 break;
+            } else {
+                // todo - remove later
+                if (!isArticle(element)
+                        && !isArticlePart(element)
+                        && !isArticleParagraph(element)
+                        && !isComment(element)
+                        && !isNote(element)) {
+                    log.info("Chapter - trash element?");
+                }
             }
         }
         return new Pair<>(newOffset, chapters);

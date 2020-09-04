@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 public class Chapter {
 
+    String numberId;
     String number;
     String name;
     List<Article> articles;

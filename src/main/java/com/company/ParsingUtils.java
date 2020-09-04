@@ -14,11 +14,31 @@ public final class ParsingUtils {
     }
 
     public static boolean isSection(Element element) {
-        return "zagrazdel".equals(element.className()) && !element.text().isBlank();
+        return ("zagrazdel".equals(element.className()) && !element.text().isBlank());
     }
 
     public static boolean isChapter(Element element) {
         return "chapter".equals(element.className()) && !element.text().isBlank();
+    }
+
+    public static boolean isArticle(Element element) {
+        return "article".equals(element.className()) && !element.text().isBlank();
+    }
+
+    public static boolean isArticlePart(Element element) {
+        return "newncpi".equals(element.className());
+    }
+
+    public static boolean isArticleParagraph(Element element) {
+        return "point".equals(element.className()) || "underpoint".equals(element.className());
+    }
+
+    public static boolean isComment(Element element) {
+        return "comment".equals(element.className());
+    }
+
+    public static boolean isNote(Element element) {
+        return "snoskiline".equals(element.className()) || "snoski".equals(element.className());
     }
 
 }
