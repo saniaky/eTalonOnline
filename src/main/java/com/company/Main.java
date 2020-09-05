@@ -56,7 +56,7 @@ public class Main {
                 i = codexSections.getNewOffset();
                 codexParts.add(CodexPart.builder()
                         .numberId(stripHTML(split[0]).substring(5).trim())
-                        .title(stripHTML(split[1]))
+                        .title(stripHTML(split[1]).toUpperCase())
                         .sections(codexSections.getList())
                         .build());
             }
@@ -77,7 +77,7 @@ public class Main {
                 i = sectionChapters.getNewOffset(); // skip passed lines
                 list.add(Section.builder()
                         .numberId(element.attr("id"))
-                        .title(name)
+                        .title(name.toUpperCase())
                         .chapters(sectionChapters.getList())
                         .build());
             } else if (Section.isGoingUp(element)) { // if going up - stop
