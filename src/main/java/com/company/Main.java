@@ -22,16 +22,14 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         var main = new Main();
-        var codexList = new ArrayList<>();
         Document doc = Jsoup.connect("https://etalonline.by/kodeksy/").get();
         Elements codexEntries = doc.selectFirst(".faq-a").select("a");
         for (Element codex : codexEntries) {
-            codexList.add(main.createCodex(codex));
+            main.createCodex(codex);
         }
-        log.info(codexList.toString());
     }
 
-    public Codex createCodex(Element codexLink) throws IOException {
+    public void createCodex(Element codexLink) throws IOException {
         String codexId = codexLink.attr("href").replace("/document/?regnum=", "").split("&")[0];
         String codexName = codexLink.text();
         Document doc = getCodexHTML(codexId);
@@ -43,7 +41,6 @@ public class Main {
                 .codexParts(buildCodexParts(elements))
                 .build();
         saveCodexJSON(codex);
-        return codex;
     }
 
     private List<CodexChange> buildChanges(Elements elements) {
