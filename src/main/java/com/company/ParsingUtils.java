@@ -37,14 +37,14 @@ public final class ParsingUtils {
         return "newncpi".equals(element.className());
     }
 
-    public static boolean isArticleParagraph(Element element) {
-        return ("point".equals(element.className()) || "underpoint".equals(element.className()))
-                && element.text().replaceFirst("[0-9]+", "").charAt(0) == '.';
-    }
-
     public static boolean isArticlePart(Element element) {
         return ("point".equals(element.className()) || "underpoint".equals(element.className()))
-                && element.text().replaceFirst("[0-9]+", "").charAt(0) == ')';
+                && element.text().replaceFirst("[0-9]+", "").trim().charAt(0) == '.';
+    }
+
+    public static boolean isArticleParagraph(Element element) {
+        return ("point".equals(element.className()) || "underpoint".equals(element.className()))
+                && element.text().replaceFirst("[0-9]+", "").trim().charAt(0) == ')';
     }
 
     public static boolean isComment(Element element) {

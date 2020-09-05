@@ -166,7 +166,7 @@ public class SizeTest {
         for (ArticlePart articlePart : article.getArticleParts()) {
             log.info("        {}. {}", articlePart.getFullNumber(), articlePart.getTitle());
             for (ArticleParagraph articleParagraph : articlePart.getArticleParagraphs()) {
-                log.info("          {}", articleParagraph.getTitle());
+                log.info("          {}) {}", articleParagraph.getFullNumber(), articleParagraph.getTitle());
             }
 
         }
