@@ -4,17 +4,14 @@ import com.company.model.*;
 import com.google.gson.Gson;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.File;
 import java.io.FileWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +22,17 @@ import static com.company.SizeTest.validateUPK;
 @Slf4j
 public class Main {
 
-    Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     public static void main(String[] args) {
-        new Main().start();
+        try {
+            new Main().start();
+        } catch (Exception e) {
+            log.error("Something bad happened", e);
+        }
     }
 
-    @SneakyThrows
-    public void start() {
+    public void start() throws IOException {
         // Document doc = Jsoup.connect("https://etalonline.by/document/?regnum=HK9900295&q_id=").get();
         Document doc = Jsoup.parse(getClass().getClassLoader().getResourceAsStream("kodeks.html"), "UTF-8", "");
         Elements elements = doc.selectFirst(".Section1").children();
@@ -40,7 +40,9 @@ public class Main {
         validateUPK(upk);
 
         String fileName = Paths.get(System.getProperty("user.home"), "upk.json").toString();
-        gson.toJson(upk, new FileWriter(fileName));
+        FileWriter writer = new FileWriter(fileName);
+        gson.toJson(upk, writer);
+        writer.close();
     }
 
     private List<CodexPart> buildCodexParts(Elements elements) {
