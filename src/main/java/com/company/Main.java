@@ -15,7 +15,6 @@ import java.util.List;
 
 import static com.company.ParsingUtils.*;
 import static com.company.SizeTest.validateUPK;
-import static java.util.Collections.emptyList;
 
 @Slf4j
 public class Main {
@@ -41,13 +40,11 @@ public class Main {
             var element = elements.get(i);
             if (isCodexPart(element)) {
                 String[] split = element.html().split("<br>");
-                String numberId = stripHTML(split[0]).substring(5).trim();
-                String name = stripHTML(split[1]);
                 var codexSections = buildSections(elements, i + 1);
                 i = codexSections.getNewOffset(); // skip passed lines
                 codexParts.add(CodexPart.builder()
-                        .numberId(numberId)
-                        .title(name)
+                        .numberId(stripHTML(split[0]).substring(5).trim())
+                        .title(stripHTML(split[1]))
                         .sections(codexSections.getList())
                         .build());
             }
@@ -63,16 +60,15 @@ public class Main {
         for (int i = offset; i < elements.size(); i++) {
             Element element = elements.get(i);
             if (isSection(element)) {
-                String numberId = element.attr("id");
                 String name = stripHTML(element.html().split("<br>")[1]);
                 var sectionChapters = buildChapters(elements, i + 1);
                 i = sectionChapters.getNewOffset(); // skip passed lines
                 sections.add(Section.builder()
-                        .numberId(numberId)
+                        .numberId(element.attr("id"))
                         .title(name)
                         .chapters(sectionChapters.getList())
                         .build());
-            } else if (isCodexPart(element)) { // if going up - stop
+            } else if (Section.isGoingUp(element)) { // if going up - stop
                 newOffset = i - 1;
                 break;
             } else {
@@ -90,16 +86,15 @@ public class Main {
         for (int i = offset; i < elements.size(); i++) {
             Element element = elements.get(i);
             if (isChapter(element)) {
-                String numberId = stripHTML(element.attr("id"));
                 String name = stripHTML(element.html().split("<br>")[1]);
                 var res = buildArticles(elements, i + 1);
                 i = res.getNewOffset();
                 chapters.add(Chapter.builder()
-                        .numberId(numberId)
+                        .numberId(element.attr("id"))
                         .title(name)
                         .articles(res.getList())
                         .build());
-            } else if (isCodexPart(element) || isSection(element)) { // if going up - stop
+            } else if (Chapter.isGoingUp(element)) {
                 newOffset = i - 1;
                 break;
             } else {
@@ -117,26 +112,27 @@ public class Main {
         for (int i = offset; i < elements.size(); i++) {
             Element element = elements.get(i);
             if (isArticle(element)) {
-                String numberId = stripHTML(element.attr("id"));
-                String name = element.text().replaceAll("Статья [0-9]+.", "").trim();
 
-                var articleText = buildArticleIntro(elements, i + 1);
+                // case 1
+                var articleText = buildArticleText(elements, i + 1);
                 i = articleText.getNewOffset();
 
+                // case 2
                 var articleParagraphs = buildArticleParagraphs(elements, i + 1);
                 i = articleParagraphs.getNewOffset();
 
+                // case 3
                 var articleParts = buildArticleParts(elements, i + 1);
                 i = articleParts.getNewOffset();
 
                 articles.add(Article.builder()
-                        .numberId(numberId)
-                        .title(name)
-                        .intro(String.join("\n", articleText.getList()))
+                        .numberId(element.attr("id"))
+                        .title(element.text().replaceFirst("Статья [0-9]+.", "").trim())
+                        .text(String.join("\n", articleText.getList()))
                         .articleParts(articleParts.getList())
                         .articleParagraphs(articleParagraphs.getList())
                         .build());
-            } else if (isCodexPart(element) || isSection(element) || isChapter(element)) {
+            } else if (Article.isGoingUp(element)) {
                 newOffset = i - 1;
                 break;
             }
@@ -145,7 +141,7 @@ public class Main {
         return new NodeResult<>(articles, newOffset);
     }
 
-    private NodeResult<String> buildArticleIntro(Elements elements, int offset) {
+    private NodeResult<String> buildArticleText(Elements elements, int offset) {
         int newOffset = offset; // might be a miss
         var list = new ArrayList<String>();
         for (int i = offset; i < elements.size(); i++) {
@@ -167,17 +163,15 @@ public class Main {
             Element element = elements.get(i);
             if (isArticleParagraph(element)) {
                 list.add(ArticleParagraph.builder()
-                        .numberId("")
-                        .title("")
-                        .text("")
-                        .articleParagraphs(emptyList())
+                        .numberId(element.attr("id"))
+                        .title(element.text().replaceFirst("[0-9]+.", "").trim())
                         .build());
-            } else {
+            } else if (ArticleParagraph.isGoingUp(element)) {
                 newOffset = i - 1;
                 break;
             }
         }
-        return new NodeResult<>(null, newOffset);
+        return new NodeResult<>(list, newOffset);
     }
 
     private NodeResult<ArticlePart> buildArticleParts(Elements elements, int offset) {
@@ -186,17 +180,19 @@ public class Main {
         for (int i = offset; i < elements.size(); i++) {
             Element element = elements.get(i);
             if (isArticlePart(element)) {
+                var articleParagraphs = buildArticleParagraphs(elements, i);
+                i = articleParagraphs.getNewOffset();
                 list.add(ArticlePart.builder()
-                        .numberId("")
-                        .title("")
-                        .text("")
+                        .numberId(element.attr("id"))
+                        .title(element.text().replaceFirst("[0-9]+.", "").trim())
+                        .articleParagraphs(articleParagraphs.getList())
                         .build());
-            } else {
+            } else if (ArticlePart.isGoingUp(element)) {
                 newOffset = i - 1;
                 break;
             }
         }
-        return new NodeResult<>(null, newOffset);
+        return new NodeResult<>(list, newOffset);
     }
 
     @Data

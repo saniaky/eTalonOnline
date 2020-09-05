@@ -3,19 +3,21 @@ package com.company.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
+import org.jsoup.nodes.Element;
 
-import java.util.List;
+import static com.company.ParsingUtils.*;
 
 /**
- * Пункт статьи
+ * Пункт статьи (aka ")")
  */
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public class ArticleParagraph extends Node {
 
-    String text;
-    List<ArticlePart> articleParagraphs; // optional
+    public static boolean isGoingUp(Element element) {
+        return isEnd(element) || isCodexPart(element) || isSection(element) || isChapter(element) || isArticle(element);
+    }
 
     @Override
     public String getType() {

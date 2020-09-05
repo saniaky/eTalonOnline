@@ -4,8 +4,12 @@ package com.company.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
+import org.jsoup.nodes.Element;
 
 import java.util.List;
+
+import static com.company.ParsingUtils.isCodexPart;
+import static com.company.ParsingUtils.isEnd;
 
 /**
  * Раздел
@@ -20,6 +24,10 @@ public class Section extends Node {
     @Override
     public String getType() {
         return "РАЗДЕЛ";
+    }
+
+    public static boolean isGoingUp(Element element) {
+        return isEnd(element) || isCodexPart(element);
     }
 
 }

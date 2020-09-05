@@ -13,6 +13,10 @@ public final class ParsingUtils {
         return element.text().isBlank();
     }
 
+    public static boolean isEnd(Element element) {
+        return "titlep".equals(element.className());
+    }
+
     public static boolean isCodexPart(Element element) {
         return "part".equals(element.className()) && !element.text().isBlank();
     }
@@ -33,12 +37,14 @@ public final class ParsingUtils {
         return "newncpi".equals(element.className());
     }
 
-    public static boolean isArticlePart(Element element) {
-        return "point".equals(element.className()) || "underpoint".equals(element.className()); // "N)"
+    public static boolean isArticleParagraph(Element element) {
+        return ("point".equals(element.className()) || "underpoint".equals(element.className()))
+                && element.text().replaceFirst("[0-9]+", "").charAt(0) == '.';
     }
 
-    public static boolean isArticleParagraph(Element element) {
-        return "point".equals(element.className()) || "underpoint".equals(element.className()); // "N."
+    public static boolean isArticlePart(Element element) {
+        return ("point".equals(element.className()) || "underpoint".equals(element.className()))
+                && element.text().replaceFirst("[0-9]+", "").charAt(0) == ')';
     }
 
     public static boolean isComment(Element element) {

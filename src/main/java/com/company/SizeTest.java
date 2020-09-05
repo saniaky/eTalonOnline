@@ -155,9 +155,22 @@ public class SizeTest {
     }
 
     private static void validateArticlesSizes(Article article) {
-        if (!article.getIntro().isBlank()) {
-            log.info("        {}", article.getIntro());
+        if (!article.getText().isBlank()) {
+            log.info("        {}", article.getText());
         }
+
+        for (ArticleParagraph articleParagraph : article.getArticleParagraphs()) {
+            log.info("        {}) {}", articleParagraph.getFullNumber(), articleParagraph.getTitle());
+        }
+
+        for (ArticlePart articlePart : article.getArticleParts()) {
+            log.info("        {}. {}", articlePart.getFullNumber(), articlePart.getTitle());
+            for (ArticleParagraph articleParagraph : articlePart.getArticleParagraphs()) {
+                log.info("          {}", articleParagraph.getTitle());
+            }
+
+        }
+
     }
 
 }

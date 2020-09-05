@@ -3,8 +3,11 @@ package com.company.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
+import org.jsoup.nodes.Element;
 
 import java.util.List;
+
+import static com.company.ParsingUtils.*;
 
 /**
  * Статья
@@ -18,13 +21,17 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Article extends Node {
 
-    String intro; // optional
-    List<ArticleParagraph> articleParagraphs; // Пункт статьи "<number>)" optional
+    String text; // optional
     List<ArticlePart> articleParts; // Часть статьи "<number>.", optional
+    List<ArticleParagraph> articleParagraphs; // Пункт статьи "<number>)" optional
 
     @Override
     public String getType() {
         return "Статья";
+    }
+
+    public static boolean isGoingUp(Element element) {
+        return isEnd(element) || isCodexPart(element) || isSection(element) || isChapter(element);
     }
 
 }
