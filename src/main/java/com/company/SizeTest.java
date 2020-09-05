@@ -129,7 +129,7 @@ public class SizeTest {
             log.info("  {} - {}", section.getFullNumber(), section.getTitle());
 
             var expectedSize = expectedSectionSizes.get(section.getFullNumber().toUpperCase());
-            //assertEquals(expectedSize, section.getChapters().size());
+            assertEquals(expectedSize, section.getChapters().size());
             validateSection(section);
         }
     }
