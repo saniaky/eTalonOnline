@@ -169,7 +169,7 @@ public class Main {
                         .articleParagraphs(articleParagraphs.getList())
                         .build());
             } else if (ArticlePart.isGoingUp(element)) {
-                newOffset = list.isEmpty() ? offset : i - 1;
+                newOffset = i - 1;
                 break;
             }
         }

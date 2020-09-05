@@ -21,7 +21,7 @@ public class ArticlePart extends Node {
 
     public static boolean isGoingUp(Element element) {
         return isEnd(element) || isCodexPart(element) || isSection(element) || isChapter(element)
-                || isArticle(element) || isNote(element);
+                || isArticle(element) || isArticleParagraph(element) || isNote(element);
     }
 
     @Override
