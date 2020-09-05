@@ -32,20 +32,23 @@ public class Main {
     public void createCodex(Element codexLink) throws IOException {
         String codexId = codexLink.attr("href").replace("/document/?regnum=", "").split("&")[0];
         String codexName = codexLink.text();
-        Document doc = getCodexHTML(codexId);
-        Elements elements = doc.selectFirst(".Section1").children();
+        var doc = getCodexHTML(codexId);
+        var elements = doc.selectFirst(".Section1").children();
+        var changes = buildChanges(elements);
         Codex codex = Codex.builder()
                 .id(codexId)
                 .name(codexName)
-                .codexChanges(buildChanges(elements))
-                .codexParts(buildCodexParts(elements))
+                .codexChanges(changes.getList())
+                .codexParts(buildCodexParts(elements, changes.getNewOffset()))
                 .build();
         saveCodexJSON(codex);
     }
 
-    private List<CodexChange> buildChanges(Elements elements) {
+    private NodeResult<CodexChange> buildChanges(Elements elements) {
         var codexChanges = new ArrayList<CodexChange>();
-        for (Element element : elements) {
+        int newOffset = 0;
+        for (int i = 0; i < elements.size(); i++) {
+            Element element = elements.get(i);
             if (isCodexChange(element)) {
                 var text = element.text();
                 codexChanges.add(CodexChange.builder()
@@ -54,15 +57,16 @@ public class Main {
                         .name(text)
                         .build());
             } else if ("contentword".equals(element.className())) {
+                newOffset = i;
                 break;
             }
         }
-        return codexChanges;
+        return new NodeResult<>(codexChanges, newOffset);
     }
 
-    private List<CodexPart> buildCodexParts(Elements elements) {
+    private List<CodexPart> buildCodexParts(Elements elements, int offset) {
         var codexParts = new ArrayList<CodexPart>();
-        for (int i = 0; i < elements.size(); i++) {
+        for (int i = offset; i < elements.size(); i++) {
             var element = elements.get(i);
             if (isCodexPart(element)) {
                 String text = element.text();

@@ -90,6 +90,16 @@
   ],
   "codexParts": [
     {
+      "sections": [],
+      "numberId": "ОБЩАЯ ЧАСТЬ",
+      "title": "ОБЩАЯ ЧАСТЬ"
+    },
+    {
+      "sections": [],
+      "numberId": "ОСОБЕННАЯ ЧАСТЬ",
+      "title": "ОСОБЕННАЯ ЧАСТЬ"
+    },
+    {
       "sections": [
         {
           "chapters": [

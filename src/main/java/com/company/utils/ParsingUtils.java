@@ -27,9 +27,21 @@ public final class ParsingUtils {
     /**
      * Example html:
      * <p class="part" style="">ОБЩАЯ ЧАСТЬ</p>
+     *
+     * <p class="contenttext" style="">ОБЩАЯ ЧАСТЬ</p>
+     *
+     *
+     * <p class="zagrazdel" id="І" style="">
+     * <a name="РАЗДЕЛ1"></a>ОБЩАЯ ЧАСТЬ<br>РАЗДЕЛ І<br>
+     * ОСНОВНЫЕ ПОЛОЖЕНИЯ<br> УГОЛОВНО-ИСПОЛНИТЕЛЬНОГО ЗАКОНОДАТЕЛЬСТВА РЕСПУБЛИКИ БЕЛАРУСЬ
+     * </p>
      */
     public static boolean isCodexPart(Element element) {
-        return "part".equals(element.className()) && !element.text().isBlank();
+        String text = element.text();
+        String className = element.className();
+        return "part".equals(className) && !text.isBlank()
+                || ("zagrazdel".equals(className) && text.contains("ЧАСТЬ"))
+                || ("contenttext".equals(className) && text.contains("ЧАСТЬ"));
     }
 
     public static boolean isSection(Element element) {
@@ -54,10 +66,6 @@ public final class ParsingUtils {
                 && element.text().replaceFirst("[0-9]+", "").trim().charAt(0) == '.';
     }
 
-
-    /**
-     * hk0300194 fails String index out of range: 0
-     */
     public static boolean isArticleParagraph(Element element) {
         return ("point".equals(element.className()) || "underpoint".equals(element.className()))
                 && !isEmptyElement(element)

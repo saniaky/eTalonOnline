@@ -5,8 +5,6 @@ import lombok.Data;
 
 import java.util.List;
 
-import static java.util.Collections.emptyList;
-
 /**
  * Иерархия:
  * Часть раздела (Part) -> Раздел (Section) -> Глава (Chapter) -> Статья -> (Часть Статьи -> Пункт статьи) или (Пункт статьи)
