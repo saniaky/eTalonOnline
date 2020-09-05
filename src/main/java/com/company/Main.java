@@ -1,6 +1,7 @@
 package com.company;
 
 import com.company.model.*;
+import com.google.gson.Gson;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -10,6 +11,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +24,8 @@ import static com.company.SizeTest.validateUPK;
 
 @Slf4j
 public class Main {
+
+    Gson gson = new Gson();
 
     public static void main(String[] args) {
         new Main().start();
@@ -30,7 +38,9 @@ public class Main {
         Elements elements = doc.selectFirst(".Section1").children();
         UPK upk = new UPK(buildCodexParts(elements));
         validateUPK(upk);
-        log.info("Done.");
+
+        String fileName = Paths.get(System.getProperty("user.home"), "upk.json").toString();
+        gson.toJson(upk, new FileWriter(fileName));
     }
 
     private List<CodexPart> buildCodexParts(Elements elements) {
