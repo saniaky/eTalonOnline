@@ -16,12 +16,13 @@ import static com.company.ParsingUtils.*;
 public class ArticleParagraph extends Node {
 
     public static boolean isGoingUp(Element element) {
-        return isEnd(element) || isCodexPart(element) || isSection(element) || isChapter(element) || isArticle(element);
+        return isEnd(element) || isCodexPart(element) || isSection(element)
+                || isChapter(element) || isArticle(element) || isArticlePart(element);
     }
 
     @Override
     public String getType() {
-        return "Пункт статьи";
+        return "Пункт";
     }
 
 }

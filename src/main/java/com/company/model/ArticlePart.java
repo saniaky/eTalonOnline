@@ -20,7 +20,8 @@ public class ArticlePart extends Node {
     List<ArticleParagraph> articleParagraphs; // Часть статьи "." => Пункт статьи ")"
 
     public static boolean isGoingUp(Element element) {
-        return isEnd(element) || isCodexPart(element) || isSection(element) || isChapter(element) || isArticlePart(element);
+        return isEnd(element) || isCodexPart(element) || isSection(element) || isChapter(element)
+                || isArticle(element) || isNote(element);
     }
 
     @Override
