@@ -1,7 +1,8 @@
 package com.company.model;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -9,12 +10,15 @@ import java.util.List;
  * Глава
  */
 @Data
-@Builder
-public class Chapter {
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class Chapter extends Node {
 
-    String numberId;
-    String number;
-    String name;
     List<Article> articles;
+
+    @Override
+    public String getType() {
+        return "Глава";
+    }
 
 }

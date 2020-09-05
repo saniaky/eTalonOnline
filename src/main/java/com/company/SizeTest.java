@@ -116,9 +116,9 @@ public class SizeTest {
     public static void validateUPK(UPK upk) {
         assertEquals(3, upk.getCodexParts().size());
         for (CodexPart codexPart : upk.getCodexParts()) {
-            log.info("{} - {}", codexPart.getNumber(), codexPart.getName());
+            log.info("{}", codexPart.getFullNumber());
 
-            var expectedSize = expectedCodexSizes.get(codexPart.getNumber().toUpperCase());
+            var expectedSize = expectedCodexSizes.get(codexPart.getFullNumber().toUpperCase());
             assertEquals(expectedSize, codexPart.getSections().size());
             validateCodexPart(codexPart);
         }
@@ -126,9 +126,9 @@ public class SizeTest {
 
     private static void validateCodexPart(CodexPart codexPart) {
         for (Section section : codexPart.getSections()) {
-            log.info("  {} - {}", section.getNumber(), section.getName());
+            log.info("  {} - {}", section.getFullNumber(), section.getTitle());
 
-            var expectedSize = expectedSectionSizes.get(section.getNumber().toUpperCase());
+            var expectedSize = expectedSectionSizes.get(section.getFullNumber().toUpperCase());
             assertEquals(expectedSize, section.getChapters().size());
             validateSection(section);
         }
@@ -136,9 +136,9 @@ public class SizeTest {
 
     private static void validateSection(Section section) {
         for (Chapter chapter : section.getChapters()) {
-            log.info("    {} - {}", chapter.getNumber(), chapter.getName());
+            log.info("    {} - {}", chapter.getFullNumber(), chapter.getTitle());
 
-            var expectedSize = expectedChapterSizes.get(chapter.getNumber().toUpperCase());
+            var expectedSize = expectedChapterSizes.get(chapter.getNumberId().toUpperCase());
             // assertEquals(expectedSize, chapter.getArticles().size());
             validateChapters(chapter);
         }
@@ -146,11 +146,17 @@ public class SizeTest {
 
     private static void validateChapters(Chapter chapter) {
         for (Article article : chapter.getArticles()) {
-            log.info("      {} - {}", article.getNumber(), article.getName());
+            log.info("      {} - {}", article.getFullNumber(), article.getTitle());
 
             // var expectedSize = expectedChapterSizes.get(chapter.getNumber().toUpperCase());
             // assertEquals(expectedSize, chapter.getArticles().size());
-            // validateArticlesSizes(section);
+            validateArticlesSizes(article);
+        }
+    }
+
+    private static void validateArticlesSizes(Article article) {
+        if (!article.getIntro().isBlank()) {
+            log.info("        {}", article.getIntro());
         }
     }
 

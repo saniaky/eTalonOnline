@@ -1,8 +1,9 @@
 package com.company.model;
 
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -10,12 +11,15 @@ import java.util.List;
  * Часть
  */
 @Data
-@Builder
-public class CodexPart {
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class CodexPart extends Node {
 
-    String numberId;
-    String number;
-    String name;
     List<Section> sections;
+
+    @Override
+    public String getType() {
+        return "Часть";
+    }
 
 }

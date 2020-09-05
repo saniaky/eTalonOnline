@@ -1,7 +1,8 @@
 package com.company.model;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -13,19 +14,17 @@ import java.util.List;
  * пункты частей статей – арабскими цифрами со скобкой.
  */
 @Data
-@Builder
-public class Article {
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class Article extends Node {
 
-    String numberId;
-    String number;
-    String name;
+    String intro; // optional
+    List<ArticleParagraph> articleParagraphs; // Пункт статьи "<number>)" optional
+    List<ArticlePart> articleParts; // Часть статьи "<number>.", optional
 
-    String text; // optional
-    List<ArticleParagraph> articleParagraphs; // Пункт статьи "<number>.", optional
-    List<ArticlePart> articleParts; // Часть статьи "<number>)" optional
-
-    // Статья 133 - только название и номер
-    // Статья 147 и Статья 147/1
-    // Статья 108
+    @Override
+    public String getType() {
+        return "Статья";
+    }
 
 }

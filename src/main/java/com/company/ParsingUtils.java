@@ -29,12 +29,16 @@ public final class ParsingUtils {
         return "article".equals(element.className()) && !element.text().isBlank();
     }
 
-    public static boolean isArticlePart(Element element) {
+    public static boolean isArticleText(Element element) {
         return "newncpi".equals(element.className());
     }
 
+    public static boolean isArticlePart(Element element) {
+        return "point".equals(element.className()) || "underpoint".equals(element.className()); // "N)"
+    }
+
     public static boolean isArticleParagraph(Element element) {
-        return "point".equals(element.className()) || "underpoint".equals(element.className());
+        return "point".equals(element.className()) || "underpoint".equals(element.className()); // "N."
     }
 
     public static boolean isComment(Element element) {
