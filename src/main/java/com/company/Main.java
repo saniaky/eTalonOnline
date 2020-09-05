@@ -2,6 +2,7 @@ package com.company;
 
 import com.company.model.*;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ import static com.company.SizeTest.validateUPK;
 @Slf4j
 public class Main {
 
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static void main(String[] args) {
         try {
