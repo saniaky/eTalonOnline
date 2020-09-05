@@ -34,10 +34,10 @@ public class Main {
     }
 
     public void start() throws IOException {
-        // Document doc = Jsoup.connect("https://etalonline.by/document/?regnum=HK9900295&q_id=").get();
-        Document doc = Jsoup.parse(getClass().getClassLoader().getResourceAsStream("kodeks.html"), "UTF-8", "");
+        // Document doc = Jsoup.connect("http://etalonline.by/document/?regnum=HK9900295&generate=html").get();
+        Document doc = Jsoup.parse(getClass().getClassLoader().getResourceAsStream("HK9900295.html"), "UTF-8", "");
         Elements elements = doc.selectFirst(".Section1").children();
-        UPK upk = new UPK(buildCodexParts(elements));
+        UPK upk = new UPK(buildCodexParts(elements), buildChanges(elements));
         validateUPK(upk);
 
         String fileName = Paths.get(System.getProperty("user.home"), "upk.json").toString();
@@ -46,9 +46,26 @@ public class Main {
         writer.close();
     }
 
+    private List<CodexChange> buildChanges(Elements elements) {
+        var codexChanges = new ArrayList<CodexChange>();
+        for (int i = 0; i < elements.size(); i++) {
+            var element = elements.get(i);
+            if (isCodexChange(element)) {
+                var text = element.text();
+                codexChanges.add(CodexChange.builder()
+                        .link(element.selectFirst("a").attr("href"))
+                        .number(text.substring(text.indexOf("<") + 1, text.indexOf(">")))
+                        .name(text)
+                        .build());
+            } else if ("contentword".equals(element.className())) {
+                break;
+            }
+        }
+        return codexChanges;
+    }
+
     private List<CodexPart> buildCodexParts(Elements elements) {
         var codexParts = new ArrayList<CodexPart>();
-
         for (int i = 0; i < elements.size(); i++) {
             var element = elements.get(i);
             if (isCodexPart(element)) {
@@ -62,7 +79,6 @@ public class Main {
                         .build());
             }
         }
-
         return codexParts;
     }
 

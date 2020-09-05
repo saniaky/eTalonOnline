@@ -20,4 +20,6 @@ public class UPK {
 
     List<CodexPart> codexParts;
 
+    List<CodexChange> codexChanges;
+
 }

@@ -17,6 +17,10 @@ public final class ParsingUtils {
         return "titlep".equals(element.className());
     }
 
+    public static boolean isCodexChange(Element element) {
+        return "changeadd".equals(element.className()) && !element.text().isBlank();
+    }
+
     public static boolean isCodexPart(Element element) {
         return "part".equals(element.className()) && !element.text().isBlank();
     }
