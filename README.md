@@ -1,7 +1,7 @@
 # A legal database in a json format 
 
 ## Includes
-- [УГОЛОВНО-ПРОЦЕССУАЛЬНЫЙ КОДЕКС РЕСПУБЛИКИ БЕЛАРУСЬ от 9 января 2019 г. № 171-З](https://etalonline.by/document/?regnum=HK9900295&q_id=)
+- [Уголовно-процессуальный кодекс Республики Беларусь](https://etalonline.by/document/?regnum=hk9900295)
 
 ## eTalon details
 Browser view:
@@ -14,5 +14,5 @@ Generate in specific format:
 - http://etalonline.by/document/?regnum=HK9900295&generate=html
 
 ## Sources
-- [https://etalonline.by/](https://etalonline.by/)
+- [https://etalonline.by/kodeksy/](https://etalonline.by/)
 - [https://kodeksy.by/](https://kodeksy.by/)

@@ -1,9 +1,12 @@
-package com.company;
+package com.company.utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
 public final class ParsingUtils {
+
+    private ParsingUtils() {
+    }
 
     public static String stripHTML(String html) {
         return Jsoup.parse(html).text();
@@ -21,6 +24,10 @@ public final class ParsingUtils {
         return "changeadd".equals(element.className()) && !element.text().isBlank();
     }
 
+    /**
+     * Example html:
+     * <p class="part" style="">ОБЩАЯ ЧАСТЬ</p>
+     */
     public static boolean isCodexPart(Element element) {
         return "part".equals(element.className()) && !element.text().isBlank();
     }
@@ -43,11 +50,17 @@ public final class ParsingUtils {
 
     public static boolean isArticlePart(Element element) {
         return ("point".equals(element.className()) || "underpoint".equals(element.className()))
+                && !isEmptyElement(element)
                 && element.text().replaceFirst("[0-9]+", "").trim().charAt(0) == '.';
     }
 
+
+    /**
+     * hk0300194 fails String index out of range: 0
+     */
     public static boolean isArticleParagraph(Element element) {
         return ("point".equals(element.className()) || "underpoint".equals(element.className()))
+                && !isEmptyElement(element)
                 && element.text().replaceFirst("[0-9]+", "").trim().charAt(0) == ')';
     }
 

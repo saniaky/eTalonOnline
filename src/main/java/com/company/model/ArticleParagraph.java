@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 import org.jsoup.nodes.Element;
 
-import static com.company.ParsingUtils.*;
+import static com.company.utils.ParsingUtils.*;
 
 /**
  * Пункт статьи (aka ")")

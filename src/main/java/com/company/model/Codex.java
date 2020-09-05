@@ -1,25 +1,27 @@
 package com.company.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 
 /**
- * Уголовно-процессуальный кодекс
- * <p>
  * Иерархия:
  * Часть раздела (Part) -> Раздел (Section) -> Глава (Chapter) -> Статья -> (Часть Статьи -> Пункт статьи) или (Пункт статьи)
  */
 @Data
 @Builder
-@AllArgsConstructor
-public class UPK {
+public class Codex {
 
+    String id;
+    String name;
+    List<CodexChange> codexChanges;
     List<CodexPart> codexParts;
 
-    List<CodexChange> codexChanges;
+    public String getLink() {
+        return "http://etalonline.by/document/?regnum=" + id;
+    }
 
 }

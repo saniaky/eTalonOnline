@@ -1,8 +1,6 @@
 package com.company;
 
 import com.company.model.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,45 +9,46 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.company.ParsingUtils.*;
-import static com.company.SizeTest.validateUPK;
+import static com.company.utils.CodexManager.getCodexHTML;
+import static com.company.utils.CodexManager.saveCodexJSON;
+import static com.company.utils.ParsingUtils.*;
 
 @Slf4j
 public class Main {
 
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-    public static void main(String[] args) {
-        try {
-            new Main().start();
-        } catch (Exception e) {
-            log.error("Something bad happened", e);
+    public static void main(String[] args) throws IOException {
+        var main = new Main();
+        var codexList = new ArrayList<>();
+        Document doc = Jsoup.connect("https://etalonline.by/kodeksy/").get();
+        Elements codexEntries = doc.selectFirst(".faq-a").select("a");
+        for (Element codex : codexEntries) {
+            codexList.add(main.createCodex(codex));
         }
+        log.info(codexList.toString());
     }
 
-    public void start() throws IOException {
-        // Document doc = Jsoup.connect("http://etalonline.by/document/?regnum=HK9900295&generate=html").get();
-        Document doc = Jsoup.parse(getClass().getClassLoader().getResourceAsStream("HK9900295.html"), "UTF-8", "");
+    public Codex createCodex(Element codexLink) throws IOException {
+        String codexId = codexLink.attr("href").replace("/document/?regnum=", "").split("&")[0];
+        String codexName = codexLink.text();
+        Document doc = getCodexHTML(codexId);
         Elements elements = doc.selectFirst(".Section1").children();
-        UPK upk = new UPK(buildCodexParts(elements), buildChanges(elements));
-        validateUPK(upk);
-
-        String fileName = Paths.get(System.getProperty("user.home"), "upk.json").toString();
-        FileWriter writer = new FileWriter(fileName);
-        gson.toJson(upk, writer);
-        writer.close();
+        Codex codex = Codex.builder()
+                .id(codexId)
+                .name(codexName)
+                .codexChanges(buildChanges(elements))
+                .codexParts(buildCodexParts(elements))
+                .build();
+        saveCodexJSON(codex);
+        return codex;
     }
 
     private List<CodexChange> buildChanges(Elements elements) {
         var codexChanges = new ArrayList<CodexChange>();
-        for (int i = 0; i < elements.size(); i++) {
-            var element = elements.get(i);
+        for (Element element : elements) {
             if (isCodexChange(element)) {
                 var text = element.text();
                 codexChanges.add(CodexChange.builder()
@@ -69,12 +68,12 @@ public class Main {
         for (int i = 0; i < elements.size(); i++) {
             var element = elements.get(i);
             if (isCodexPart(element)) {
-                String[] split = element.html().split("<br>");
+                String text = element.text();
                 var codexSections = buildSections(elements, i + 1);
                 i = codexSections.getNewOffset();
                 codexParts.add(CodexPart.builder()
-                        .numberId(stripHTML(split[0]).substring(5).trim())
-                        .title(stripHTML(split[1]).toUpperCase())
+                        .numberId(text)
+                        .title(text)
                         .sections(codexSections.getList())
                         .build());
             }
@@ -100,8 +99,8 @@ public class Main {
             } else if (Section.isGoingUp(element)) { // if going up - stop
                 newOffset = i - 1;
                 break;
-            } else {
-                log.info("Section - trash element {}", element);
+            } else if (!isEmptyElement(element)) {
+                log.info("Section - trash? {}", element);
             }
         }
 
@@ -126,8 +125,8 @@ public class Main {
             } else if (Chapter.isGoingUp(element)) {
                 newOffset = i - 1;
                 break;
-            } else {
-                log.info("Chapter - trash element?");
+            } else if (!isEmptyElement(element)) {
+                log.info("Chapter - trash? {}", element);
             }
         }
 
@@ -163,6 +162,8 @@ public class Main {
             } else if (Article.isGoingUp(element)) {
                 newOffset = i - 1;
                 break;
+            } else if (!isEmptyElement(element)) {
+                log.info("Article - trash? {}", element);
             }
         }
 

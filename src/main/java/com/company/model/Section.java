@@ -8,8 +8,8 @@ import org.jsoup.nodes.Element;
 
 import java.util.List;
 
-import static com.company.ParsingUtils.isCodexPart;
-import static com.company.ParsingUtils.isEnd;
+import static com.company.utils.ParsingUtils.isCodexPart;
+import static com.company.utils.ParsingUtils.isEnd;
 
 /**
  * Раздел

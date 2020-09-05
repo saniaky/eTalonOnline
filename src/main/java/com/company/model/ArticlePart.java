@@ -7,7 +7,7 @@ import org.jsoup.nodes.Element;
 
 import java.util.List;
 
-import static com.company.ParsingUtils.*;
+import static com.company.utils.ParsingUtils.*;
 
 /**
  * Часть статьи  (".")
