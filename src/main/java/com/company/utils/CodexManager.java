@@ -22,6 +22,7 @@ public final class CodexManager {
     private static final String HOME = System.getProperty("user.home");
     private static final String HTML_CACHE_PATH = Path.of(HOME, "eTalon", "html").toString();
     private static final String JSON_PATH = Path.of(HOME, "eTalon", "json").toString();
+    public static final String HTML_EXT = ".html";
 
     static {
         if (new File(HTML_CACHE_PATH).mkdirs() && new File(JSON_PATH).mkdirs()) {
@@ -36,19 +37,24 @@ public final class CodexManager {
 
     public static Document getCodexHTML(String codexId) throws IOException {
         Document doc;
-        Path path = Path.of(HTML_CACHE_PATH, codexId + ".html");
+        Path path = Path.of(HTML_CACHE_PATH, codexId + HTML_EXT);
         if (Files.exists(path)) {
             doc = Jsoup.parse(new FileInputStream(path.toString()), "UTF-8", "");
         } else {
             log.info("Codex '{}' wasn't found, downloading one.", codexId);
             doc = Jsoup.connect("http://etalonline.by/document/?regnum=" + codexId).get();
-            saveCodexHTML(doc, codexId);
+            saveHtml(codexId, doc);
         }
         return doc;
     }
 
-    public static void saveCodexHTML(Document doc, String codexId) throws IOException {
-        var path = Path.of(HTML_CACHE_PATH, codexId + ".html");
+    public static FileInputStream loadHtml(String fileName) throws IOException {
+        Path path = Path.of(HTML_CACHE_PATH, fileName + HTML_EXT);
+        return new FileInputStream(path.toString());
+    }
+
+    public static void saveHtml(String fileName, Document doc) throws IOException {
+        var path = Path.of(HTML_CACHE_PATH, fileName + HTML_EXT);
         var writer = new FileWriter(path.toString());
         writer.write(doc.toString());
         writer.close();

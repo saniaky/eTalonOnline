@@ -18,10 +18,10 @@ import static com.company.utils.CodexManager.saveCodexJSON;
 import static com.company.utils.ParsingUtils.*;
 
 @Slf4j
-public class Main {
+public class App {
 
     public static void main(String[] args) throws IOException {
-        var main = new Main();
+        var main = new App();
         Document doc = Jsoup.connect("https://etalonline.by/kodeksy/").get();
         Elements codexEntries = doc.selectFirst(".faq-a").select("a");
         for (Element codex : codexEntries) {
@@ -35,6 +35,12 @@ public class Main {
         var doc = getCodexHTML(codexId);
         var elements = doc.selectFirst(".Section1").children();
         var changes = buildChanges(elements);
+
+        // Pre-processing
+        // remove empty tags
+        // remove Приложение (table)
+        // verify structure: part -> section -> chapter -> ..., fix if possible
+
         Codex codex = Codex.builder()
                 .id(codexId)
                 .name(codexName)
