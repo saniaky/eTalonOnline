@@ -13,7 +13,7 @@ public final class CodexNodeBuilder {
     }
 
     public static CodexNode buildNode(CodexNodeType nodeType, Element element) {
-        String text = element.text();
+        String text = element.text().trim();
         if (CHANGE == nodeType) {
             return CodexChange.builder()
                     .id(text.substring(text.indexOf("<") + 1, text.indexOf(">")))
@@ -22,15 +22,16 @@ public final class CodexNodeBuilder {
                     .build();
         }
         if (CODEX_PART == nodeType) {
+            String[] split = element.html().split("<br>");
             return CodexPart.builder()
-                    .id(text)
-                    .title(text)
+                    .id(split[0].toUpperCase().trim())
+                    .title(split[1].toUpperCase().trim())
                     .build();
         }
         if (SECTION == nodeType) {
             return Section.builder()
                     .id(element.attr("id"))
-                    .title(element.html().split("<br>")[1])
+                    .title(element.html().split("<br>")[1].trim())
                     .text(text)
                     .build();
         }

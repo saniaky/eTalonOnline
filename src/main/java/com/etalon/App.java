@@ -54,7 +54,7 @@ public class App {
 //        main.createCodex("hk9800219", "Хозяйственный процессуальный кодекс Республики Беларусь");
     }
 
-    public void createCodex(String codexId, String codexName) throws IOException {
+    public CodexBook createCodex(String codexId, String codexName) throws IOException {
         var doc = getCodexHTML(codexId);
         var entries = doc.selectFirst(".Section1").children();
 
@@ -77,6 +77,7 @@ public class App {
         // Save results
         log.info(codex.toString());
 //        saveCodexJSON(codex);
+        return codex;
     }
 
     private void printStatistics(String codexId, String codexName, Elements entries) {
