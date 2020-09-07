@@ -23,10 +23,29 @@ class AppUPKTest {
         // Then
         assertEquals(54, codex.getCodexChanges().size()); // Кол-во правок в кодексе
         assertEquals(3, codex.getChildren().size()); // Кол-во частей кодекса
+
         part1(codex);
         part2(codex);
         part3(codex);
 
+        article1(codex);
+        article60(codex);
+    }
+
+    private void article60(CodexBook codex) {
+        // Часть первая
+        // РАЗДЕЛ II ГОСУДАРСТВЕННЫЕ ОРГАНЫ И ДРУГИЕ УЧАСТНИКИ УГОЛОВНОГО ПРОЦЕССА
+        //   ГЛАВА 7 ИНЫЕ УЧАСТНИКИ УГОЛОВНОГО ПРОЦЕССА
+        //     Статья 60/1. Адвокат свидетеля
+        var article = (Article) codex.getChildren().get(0).getChildren().get(1).getChildren().get(3).getChildren().get(1);
+        assertEquals(4, article.getChildren().size());
+        assertEquals(5, article.getChildren().get(0).getChildren().size());
+        assertEquals(0, article.getChildren().get(1).getChildren().size());
+        assertEquals(3, article.getChildren().get(2).getChildren().size());
+        assertEquals(0, article.getChildren().get(3).getChildren().size());
+    }
+
+    private void article1(CodexBook codex) {
         Article article1 = (Article) codex.getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0);
         assertEquals(5, article1.getChildren().size());
         String expected = "Уголовно-процессуальный кодекс Республики Беларусь, основываясь на Конституции Республики Беларусь, устанавливает порядок деятельности органов, ведущих уголовный процесс, а также права и обязанности участников уголовного процесса.";

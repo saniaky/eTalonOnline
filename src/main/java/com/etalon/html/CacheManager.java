@@ -1,17 +1,17 @@
 package com.etalon.html;
 
 import com.etalon.model.CodexBook;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.*;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +19,8 @@ import java.nio.file.Paths;
 @Slf4j
 public final class CacheManager {
 
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static final ObjectMapper mapper = new ObjectMapper();
+
     private static final String HOME = System.getProperty("user.home");
     private static final String HTML_CACHE_PATH = Path.of(HOME, "eTalon", "html").toString();
     private static final String JSON_PATH = Path.of(HOME, "eTalon", "json").toString();
@@ -33,6 +34,9 @@ public final class CacheManager {
         } else {
             log.info("Folders existed.");
         }
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
 
     private CacheManager() {
@@ -68,19 +72,10 @@ public final class CacheManager {
         writer.close();
     }
 
-    public static void downloadFile(URL url, String fileName) throws IOException {
-        ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
-        FileOutputStream fileOutputStream = new FileOutputStream(fileName);
-        FileChannel fileChannel = fileOutputStream.getChannel();
-        fileOutputStream.getChannel()
-                .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-
-    }
-
     public static void saveCodexJSON(CodexBook codex) throws IOException {
         var path = Paths.get(JSON_PATH, codex.getId() + ".json");
         var writer = new FileWriter(path.toString());
-        gson.toJson(codex, writer);
+        mapper.writeValue(writer, codex);
         writer.close();
     }
 
