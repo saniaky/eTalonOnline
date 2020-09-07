@@ -50,6 +50,10 @@ public final class ParsingUtils {
                 && element.text().replaceFirst(NUMBER_REGEX, "").trim().charAt(0) == ')';
     }
 
+    private static boolean isText(Element element) {
+        return cssFit(CSSClassName.TEXT, element);
+    }
+
     public static String removeNumberPrefix(String text) {
         return text.replaceFirst(NUMBER_REGEX, "").trim().substring(1).trim();
     }
@@ -92,7 +96,7 @@ public final class ParsingUtils {
             case ARTICLE_COMMENT:
                 return cssFit(CSSClassName.ARTICLE_COMMENT, element);
             case TEXT:
-                return cssFit(CSSClassName.TEXT, element);
+                return isText(element);
             default:
                 return false;
         }
@@ -122,6 +126,8 @@ public final class ParsingUtils {
                         || cssFit(CSSClassName.ARTICLE_COMMENT, element);
             case ARTICLE_PARAGRAPH:
                 return isGoingUp(element, ARTICLE_PART) || isArticlePart(element);
+            case TEXT:
+                return !isText(element);
             default:
                 return true;
         }
