@@ -36,11 +36,9 @@ public final class CodexNodeBuilder {
                     .build();
         }
         if (CHAPTER == nodeType) {
-            String title = stripHTML(element.html().split("<br>")[1]);
-            String id = element.attr("id");
             return Chapter.builder()
-                    .id(id)
-                    .title(title)
+                    .id(element.attr("id"))
+                    .title(stripHTML(element.html().split("<br>")[1]))
                     .text(text)
                     .build();
         }

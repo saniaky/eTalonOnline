@@ -16,6 +16,7 @@ import java.util.List;
 
 import static com.etalon.model.CodexNodeType.*;
 import static com.etalon.utils.CodexManager.getCodexHTML;
+import static com.etalon.utils.CodexManager.saveCodexJSON;
 import static com.etalon.utils.CodexNodeBuilder.buildNode;
 import static com.etalon.utils.CodexNodeBuilder.getUniqueElement;
 import static com.etalon.utils.ParsingUtils.isBlank;
@@ -76,7 +77,7 @@ public class App {
 
         // Save results
         log.info(codex.toString());
-//        saveCodexJSON(codex);
+        saveCodexJSON(codex);
         return codex;
     }
 
