@@ -22,23 +22,39 @@ public final class CodexNodeBuilder {
                     .build();
         }
         if (CODEX_PART == nodeType) {
-            String[] split = element.html().split("<br>");
+            var id = text;
+            var title = text;
+            var split = element.html().split("<br>");
+            if (split.length > 1) {
+                id = split[0];
+                title = split[1];
+            }
             return CodexPart.builder()
-                    .id(split[0].toUpperCase().trim())
-                    .title(split[1].toUpperCase().trim())
+                    .id(id.toUpperCase().trim())
+                    .title(title.toUpperCase().trim())
                     .build();
         }
         if (SECTION == nodeType) {
+            var title = text;
+            var split = element.html().split("<br>");
+            if (split.length > 1) {
+                title = split[1];
+            }
             return Section.builder()
                     .id(element.id())
-                    .title(element.html().split("<br>")[1].trim())
+                    .title(title.trim())
                     .text(text)
                     .build();
         }
         if (CHAPTER == nodeType) {
+            var title = element.text();
+            var split = element.html().split("<br>");
+            if (split.length > 1) {
+                title = split[1].trim();
+            }
             return Chapter.builder()
                     .id(element.id())
-                    .title(stripHTML(element.html().split("<br>")[1]))
+                    .title(stripHTML(title))
                     .text(text)
                     .build();
         }

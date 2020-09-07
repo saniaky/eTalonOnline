@@ -51,6 +51,7 @@ public final class CacheManager {
             log.info("Codex '{}' wasn't found, downloading one.", codexId);
             doc = Jsoup.connect("http://etalonline.by/document/?regnum=" + codexId)
                     .maxBodySize(1024 * 1024 * 20) // 20 MB
+                    .timeout(60000)
                     .userAgent(USER_AGENT)
                     .referrer(REFERRER)
                     .get();

@@ -25,7 +25,7 @@ import static java.util.Map.entry;
 @Slf4j
 public class App {
 
-    private static Map<String, String> map = Map.ofEntries(
+    private static final Map<String, String> map = Map.ofEntries(
             entry("hk0000441", "Банковский кодекс Республики Беларусь"),
             entry("hk0800412", "Бюджетный кодекс Республики Беларусь"),
             entry("hk1400149", "Водный кодекс Республики Беларусь"),
@@ -56,8 +56,10 @@ public class App {
 
     public static void main(String[] args) throws IOException {
         var main = new App();
-        CodexBook codexBook = main.createCodex("hk9900295", "Уголовно-процессуальный кодекс Республики Беларусь");
-        saveCodexJSON(codexBook);
+        for (var entry : map.entrySet()) {
+            var codex = main.createCodex(entry.getKey(), entry.getValue());
+            saveCodexJSON(codex);
+        }
     }
 
     public CodexBook createCodex(String codexId, String codexName) throws IOException {
@@ -70,6 +72,14 @@ public class App {
         // Process html entries and build codex
         var changes = buildTree(CHANGE_ENTRY, entries, 0);
         var codexParts = buildTree(CODEX_PART, entries, changes.getNewOffset());
+        if (codexParts.getList().isEmpty()) {
+            // В кодексе нет частей, пробуем разделы
+            codexParts = buildTree(SECTION, entries, changes.getNewOffset());
+        }
+        if (codexParts.getList().isEmpty()) {
+            // В кодексе нет разделов, пробуем главы
+            codexParts = buildTree(CHAPTER, entries, changes.getNewOffset());
+        }
         return CodexBook.builder()
                 .id(codexId)
                 .date(getUniqueValue(entries, CODEX_DATE))
@@ -82,7 +92,7 @@ public class App {
     }
 
     private void printStatistics(String codexId, String codexName, Elements entries) {
-        log.info("Information about the '{} - {}'", codexId, codexName);
+        log.info("Parsing '{} - {}'", codexId, codexName);
         var types = new HashSet<String>();
         var unknown = new HashSet<String>();
         int emptyCount = 0;
@@ -91,10 +101,10 @@ public class App {
             if (!isKnown(entry.className())) unknown.add(entry.className());
             emptyCount += isEmpty(entry) ? 1 : 0;
         }
-        log.info("types: {}, empty: {}, unknown: {}", types.size(), emptyCount, unknown.size());
-        log.info("All types: {}", String.join(" | ", types));
+        log.info("  types: {}, empty: {}, unknown: {}", types.size(), emptyCount, unknown.size());
+        log.info("  all types: {}", String.join(" | ", types));
         if (!unknown.isEmpty()) {
-            log.info("Found unknown types: {}", String.join(" | ", unknown));
+            log.info("  found unknown types: {}", String.join(" | ", unknown));
         }
     }
 

@@ -41,13 +41,15 @@ public final class ParsingUtils {
     }
 
     public static boolean isArticlePart(Element element) {
+        String trim = element.text().replaceFirst(NUMBER_REGEX, "").trim();
         return (cssFit(CSSClassName.POINT, element) || cssFit(CSSClassName.UNDERPOINT, element))
-                && element.text().replaceFirst(NUMBER_REGEX, "").trim().charAt(0) == '.';
+                && trim.length() > 0 && trim.charAt(0) == '.';
     }
 
     public static boolean isArticleParagraph(Element element) {
+        String trim = element.text().replaceFirst(NUMBER_REGEX, "").trim();
         return (cssFit(CSSClassName.POINT, element) || cssFit(CSSClassName.UNDERPOINT, element))
-                && element.text().replaceFirst(NUMBER_REGEX, "").trim().charAt(0) == ')';
+                && trim.length() > 0 && trim.charAt(0) == ')';
     }
 
     private static boolean isText(Element element) {
@@ -75,14 +77,14 @@ public final class ParsingUtils {
                 return cssFit(CSSClassName.CODEX_NUMBER, element);
             case CONTENT_ENTRY:
                 return cssFit(CSSClassName.CONTENT_TEXT, element);
+            case CODEX_PART:
+                return cssFit(CSSClassName.CODEX_PART, element);
             case NOTE:
                 return cssFit(CSSClassName.NOTE, element);
             case CHANGE_ENTRY:
                 return cssFit(CSSClassName.CHANGE_TEXT, element);
             case CODEX_ACCEPTED:
                 return cssFit(CSSClassName.CODEX_ACCEPTED, element);
-            case CODEX_PART:
-                return cssFit(CSSClassName.CODEX_PART, element);
             case SECTION:
                 return cssFit(CSSClassName.SECTION, element);
             case CHAPTER:
