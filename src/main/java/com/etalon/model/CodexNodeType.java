@@ -40,7 +40,9 @@ public enum CodexNodeType {
     TEXT(of("newncpi")), // текст после .article or .chapter
 
     NOTE_LINE(of("snoskiline")),
-    NOTE(of("snoski"));
+    NOTE(of("snoski")),
+
+    TRASH(of("titlep"));
 
     private final Set<String> classNames;
 

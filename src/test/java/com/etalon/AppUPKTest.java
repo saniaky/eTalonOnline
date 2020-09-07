@@ -27,12 +27,25 @@ class AppUPKTest {
         part3(codex);
     }
 
+    // Часть 1
     private void part1(CodexBook codex) {
-        // Часть 1
         CodexNode part1 = codex.getChildren().get(0);
-        assertEquals(6, part1.getChildren().size()); // Часть 1 - 6 разделов
-        assertEquals("ОСНОВНЫЕ ПОЛОЖЕНИЯ", part1.getChildren().get(0).getTitle());
-        assertEquals("ИНЫЕ ОБЩИЕ ПОЛОЖЕНИЯ", part1.getChildren().get(5).getTitle());
+        assertEquals(6, part1.getChildren().size()); // 6 разделов
+
+        // Раздел 1
+        CodexNode section1 = part1.getChildren().get(0);
+        assertEquals("ОСНОВНЫЕ ПОЛОЖЕНИЯ", section1.getTitle());
+        assertEquals(3, section1.getChildren().size()); // 3 главы
+
+        // Раздел 6
+        //   ГЛАВА 17. Гражданский иск в уголовном процессе
+        //   ...
+        //   ГЛАВА 19. Соединение, выделение и восстановление уголовных дел
+        CodexNode section6 = part1.getChildren().get(5);
+        assertEquals("ИНЫЕ ОБЩИЕ ПОЛОЖЕНИЯ", section6.getTitle());
+        assertEquals(3, section6.getChildren().size()); // 3 главы
+        assertEquals("Гражданский иск в уголовном процессе", section6.getChildren().get(0).getTitle());
+        assertEquals("Соединение, выделение и восстановление уголовных дел", section6.getChildren().get(2).getTitle());
     }
 
     private void part2(CodexBook codex) {
