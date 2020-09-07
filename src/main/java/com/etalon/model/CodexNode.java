@@ -17,7 +17,7 @@ public abstract class CodexNode {
     List<CodexNode> children;
 
     public String getFullNumber() {
-        return getType() + " " + id;
+        return getType().name() + " " + id;
     }
 
     public abstract CodexNodeType getType();

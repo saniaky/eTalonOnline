@@ -48,6 +48,11 @@ public final class CodexNodeBuilder {
                     .title(element.text())
                     .build();
         }
+        if (TEXT == nodeType) {
+            return Text.builder()
+                    .text(element.text())
+                    .build();
+        }
         throw new IllegalArgumentException();
     }
 

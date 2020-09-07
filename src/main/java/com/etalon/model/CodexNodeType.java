@@ -33,7 +33,6 @@ public enum CodexNodeType {
     CHAPTER(of("chapter")), // Глава
     ARTICLE(of("article")), // Статья
     ARTICLE_PART(of("")),
-    ARTICLE_PARAGRAPH(of("")),
     ARTICLE_COMMENT(of("comment")), // Примечание к статье
     POINT(of("point", "underpoint")), // Пункт статьи
 
@@ -65,6 +64,8 @@ public enum CodexNodeType {
                 return isChapter(element);
             case ARTICLE:
                 return isArticle(element);
+            case TEXT:
+                return isText(element);
         }
         return false;
     }
@@ -81,7 +82,7 @@ public enum CodexNodeType {
             case CHAPTER:
                 return asList(TEXT, ARTICLE);
             case ARTICLE:
-                return asList();
+                return asList(TEXT);
         }
         return emptyList();
     }

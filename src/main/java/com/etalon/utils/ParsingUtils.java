@@ -57,7 +57,7 @@ public final class ParsingUtils {
         return ARTICLE.getClassNames().contains(element.className()) && notEmpty(element);
     }
 
-    public static boolean isArticleText(Element element) {
+    public static boolean isText(Element element) {
         return "newncpi".equals(element.className());
     }
 

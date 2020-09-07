@@ -10,11 +10,11 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class ArticleParagraph extends CodexNode {
+public class Text extends CodexNode {
 
     @Override
     public CodexNodeType getType() {
-        return CodexNodeType.ARTICLE_PARAGRAPH;
+        return CodexNodeType.TEXT;
     }
 
 }
