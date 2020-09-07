@@ -1,5 +1,6 @@
 package com.etalon;
 
+import com.etalon.model.Article;
 import com.etalon.model.CodexBook;
 import com.etalon.model.CodexNode;
 import org.junit.jupiter.api.Test;
@@ -25,17 +26,27 @@ class AppUPKTest {
         part1(codex);
         part2(codex);
         part3(codex);
+
+        Article article1 = (Article) codex.getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0);
+        assertEquals(5, article1.getChildren().size());
+        String expected = "Уголовно-процессуальный кодекс Республики Беларусь, основываясь на Конституции Республики Беларусь, устанавливает порядок деятельности органов, ведущих уголовный процесс, а также права и обязанности участников уголовного процесса.";
+        assertEquals(expected, article1.getChildren().get(0).getText());
     }
 
-    // Часть 1
+    // ЧАСТЬ ПЕРВАЯ.
     private void part1(CodexBook codex) {
         CodexNode part1 = codex.getChildren().get(0);
         assertEquals(6, part1.getChildren().size()); // 6 разделов
 
         // Раздел 1
+        //  ГЛАВА 1. УГОЛОВНО-ПРОЦЕССУАЛЬНОЕ ЗАКОНОДАТЕЛЬСТВО
+        //  ...
+        //  ГЛАВА 3. УГОЛОВНОЕ ПРЕСЛЕДОВАНИЕ
         CodexNode section1 = part1.getChildren().get(0);
         assertEquals("ОСНОВНЫЕ ПОЛОЖЕНИЯ", section1.getTitle());
         assertEquals(3, section1.getChildren().size()); // 3 главы
+        assertEquals("УГОЛОВНО-ПРОЦЕССУАЛЬНОЕ ЗАКОНОДАТЕЛЬСТВО", section1.getChildren().get(0).getTitle());
+        assertEquals("УГОЛОВНОЕ ПРЕСЛЕДОВАНИЕ", section1.getChildren().get(2).getTitle());
 
         // Раздел 6
         //   ГЛАВА 17. Гражданский иск в уголовном процессе
@@ -48,29 +59,27 @@ class AppUPKTest {
         assertEquals("СОЕДИНЕНИЕ, ВЫДЕЛЕНИЕ И ВОССТАНОВЛЕНИЕ УГОЛОВНЫХ ДЕЛ", section6.getChildren().get(2).getTitle());
     }
 
+    //  ЧАСТЬ ВТОРАЯ. ДОСУДЕБНОЕ ПРОИЗВОДСТВО
     private void part2(CodexBook codex) {
-        /*
-            ЧАСТЬ ВТОРАЯ. ДОСУДЕБНОЕ ПРОИЗВОДСТВО
-                РАЗДЕЛ VII. ВОЗБУЖДЕНИЕ УГОЛОВНОГО ДЕЛА
-                РАЗДЕЛ VIII. ПРЕДВАРИТЕЛЬНОЕ РАССЛЕДОВАНИЕ
-
-         */
         CodexNode part2 = codex.getChildren().get(1);
-        assertEquals(2, part2.getChildren().size()); // Часть 3 - 2 раздела
+        assertEquals(2, part2.getChildren().size()); // 2 раздела
+
+        //  РАЗДЕЛ VII. ВОЗБУЖДЕНИЕ УГОЛОВНОГО ДЕЛА
         assertEquals("ВОЗБУЖДЕНИЕ УГОЛОВНОГО ДЕЛА", part2.getChildren().get(0).getTitle());
+
+        //  РАЗДЕЛ VIII. ПРЕДВАРИТЕЛЬНОЕ РАССЛЕДОВАНИЕ
         assertEquals("ПРЕДВАРИТЕЛЬНОЕ РАССЛЕДОВАНИЕ", part2.getChildren().get(1).getTitle());
     }
 
+    // ЧАСТЬ ТРЕТЬЯ. СУДЕБНОЕ ПРОИЗВОДСТВО
     private void part3(CodexBook codex) {
-        /*
-            ЧАСТЬ ТРЕТЬЯ. СУДЕБНОЕ ПРОИЗВОДСТВО
-                РАЗДЕЛ IX. ПРОИЗВОДСТВО В СУДЕ ПЕРВОЙ ИНСТАНЦИИ
-                ...
-                РАЗДЕЛ XVI. ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ
-         */
         CodexNode part3 = codex.getChildren().get(2);
-        assertEquals(8, part3.getChildren().size()); // Часть 3 - 8 разделов
+        assertEquals(8, part3.getChildren().size()); // 8 разделов
+
+        //  РАЗДЕЛ IX. ПРОИЗВОДСТВО В СУДЕ ПЕРВОЙ ИНСТАНЦИИ
         assertEquals("ПРОИЗВОДСТВО В СУДЕ ПЕРВОЙ ИНСТАНЦИИ", part3.getChildren().get(0).getTitle());
+
+        //  РАЗДЕЛ XVI. ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ
         assertEquals("ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ", part3.getChildren().get(7).getTitle());
     }
 

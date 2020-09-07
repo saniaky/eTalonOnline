@@ -6,17 +6,17 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Изменения и дополнения
+ * Пункт статьи  (")")
  */
 @Data
 @SuperBuilder
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class CodexChange extends CodexNode {
+public class ArticleParagraph extends CodexNode {
 
     @Override
     public CodexNodeType getType() {
-        return CodexNodeType.CHANGE_ENTRY;
+        return CodexNodeType.ARTICLE_PART;
     }
 
 }

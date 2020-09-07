@@ -1,11 +1,11 @@
-package com.etalon.utils;
+package com.etalon.html;
 
 import com.etalon.model.*;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
+import static com.etalon.html.ParsingUtils.removeNumberPrefix;
+import static com.etalon.html.ParsingUtils.stripHTML;
 import static com.etalon.model.CodexNodeType.*;
-import static com.etalon.utils.ParsingUtils.stripHTML;
 
 public final class CodexNodeBuilder {
 
@@ -14,7 +14,7 @@ public final class CodexNodeBuilder {
 
     public static CodexNode buildNode(CodexNodeType nodeType, Element element) {
         String text = element.text().trim();
-        if (CHANGE == nodeType) {
+        if (CHANGE_ENTRY == nodeType) {
             return CodexChange.builder()
                     .id(text.substring(text.indexOf("<") + 1, text.indexOf(">")))
                     .link(element.selectFirst("a").attr("href"))
@@ -30,34 +30,47 @@ public final class CodexNodeBuilder {
         }
         if (SECTION == nodeType) {
             return Section.builder()
-                    .id(element.attr("id"))
+                    .id(element.id())
                     .title(element.html().split("<br>")[1].trim())
                     .text(text)
                     .build();
         }
         if (CHAPTER == nodeType) {
             return Chapter.builder()
-                    .id(element.attr("id"))
+                    .id(element.id())
                     .title(stripHTML(element.html().split("<br>")[1]))
                     .text(text)
                     .build();
         }
         if (ARTICLE == nodeType) {
             return Article.builder()
-                    .id(element.attr("id"))
-                    .title(element.text())
+                    .id(element.id())
+                    .title(text)
+                    .build();
+        }
+        if (ARTICLE_PART == nodeType) {
+            return ArticlePart.builder()
+                    .id(element.id())
+                    .text(removeNumberPrefix(text))
+                    .build();
+        }
+        if (ARTICLE_PARAGRAPH == nodeType) {
+            return ArticleParagraph.builder()
+                    .id(element.id())
+                    .text(removeNumberPrefix(text))
+                    .build();
+        }
+        if (ARTICLE_COMMENT == nodeType) {
+            return ArticleComment.builder()
+                    .text(text)
                     .build();
         }
         if (TEXT == nodeType) {
             return Text.builder()
-                    .text(element.text())
+                    .text(text)
                     .build();
         }
-        throw new IllegalArgumentException();
-    }
-
-    public static String getUniqueElement(Elements entries, CodexNodeType nodeType) {
-        return entries.select(nodeType.getCSSSelector()).text();
+        throw new IllegalArgumentException("No ideas how to build such node.");
     }
 
 }

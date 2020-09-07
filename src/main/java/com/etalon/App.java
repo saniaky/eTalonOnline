@@ -15,19 +15,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static com.etalon.html.CacheManager.getCodexHTML;
+import static com.etalon.html.CacheManager.saveCodexJSON;
+import static com.etalon.html.CodexNodeBuilder.buildNode;
+import static com.etalon.html.ParsingUtils.*;
 import static com.etalon.model.CodexNodeType.*;
-import static com.etalon.utils.CodexManager.getCodexHTML;
-import static com.etalon.utils.CodexManager.saveCodexJSON;
-import static com.etalon.utils.CodexNodeBuilder.buildNode;
-import static com.etalon.utils.CodexNodeBuilder.getUniqueElement;
-import static com.etalon.utils.ParsingUtils.isBlank;
-import static com.etalon.utils.ParsingUtils.isKnown;
 import static java.util.Map.entry;
 
 @Slf4j
 public class App {
 
-    private static Map<String, String> list = Map.ofEntries(
+    private static Map<String, String> map = Map.ofEntries(
             entry("hk0000441", "Банковский кодекс Республики Беларусь"),
             entry("hk0800412", "Бюджетный кодекс Республики Беларусь"),
             entry("hk1400149", "Водный кодекс Республики Беларусь"),
@@ -58,7 +56,8 @@ public class App {
 
     public static void main(String[] args) throws IOException {
         var main = new App();
-        main.createCodex("hk9900295", "Уголовно-процессуальный кодекс Республики Беларусь");
+        CodexBook codexBook = main.createCodex("hk9900295", "Уголовно-процессуальный кодекс Республики Беларусь");
+        saveCodexJSON(codexBook);
     }
 
     public CodexBook createCodex(String codexId, String codexName) throws IOException {
@@ -69,22 +68,17 @@ public class App {
         printStatistics(codexId, codexName, entries);
 
         // Process html entries and build codex
-        var changes = buildTree(CHANGE, entries, 0);
+        var changes = buildTree(CHANGE_ENTRY, entries, 0);
         var codexParts = buildTree(CODEX_PART, entries, changes.getNewOffset());
-        CodexBook codex = CodexBook.builder()
+        return CodexBook.builder()
                 .id(codexId)
-                .date(getUniqueElement(entries, CODEX_DATE))
-                .number(getUniqueElement(entries, CODEX_NUMBER))
-                .acceptedDetails(getUniqueElement(entries, CODEX_ACCEPTED))
+                .date(getUniqueValue(entries, CODEX_DATE))
+                .number(getUniqueValue(entries, CODEX_NUMBER))
+                .acceptedDetails(getUniqueValue(entries, CODEX_ACCEPTED))
                 .name(codexName)
                 .codexChanges(changes.getList())
                 .children(codexParts.getList())
                 .build();
-
-        // Save results
-        log.info(codex.toString());
-        saveCodexJSON(codex);
-        return codex;
     }
 
     private void printStatistics(String codexId, String codexName, Elements entries) {
@@ -95,7 +89,7 @@ public class App {
         for (Element entry : entries) {
             types.add(entry.className());
             if (!isKnown(entry.className())) unknown.add(entry.className());
-            emptyCount += isBlank(entry) ? 1 : 0;
+            emptyCount += isEmpty(entry) ? 1 : 0;
         }
         log.info("types: {}, empty: {}, unknown: {}", types.size(), emptyCount, unknown.size());
         log.info("All types: {}", String.join(" | ", types));
@@ -110,17 +104,19 @@ public class App {
 
         for (int idx = offset; idx < elements.size(); idx++) {
             var element = elements.get(idx);
-            if (nodeType.isGoingUp(element)) {
+            if (isGoingUp(element, nodeType)) {
                 newOffset = idx - 1;
                 break;
             }
-            if (nodeType.isFit(element)) {
+            if (isFit(element, nodeType)) {
                 var node = buildNode(nodeType, element);
+                var nodeChildren = new ArrayList<CodexNode>(0);
                 for (CodexNodeType childType : nodeType.getFirstDeepChildren()) {
                     var children = buildTree(childType, elements, idx + 1);
-                    node.setChildren(children.getList());
+                    nodeChildren.addAll(children.getList());
                     idx = children.getNewOffset();
                 }
+                node.setChildren(nodeChildren);
                 list.add(node);
             }
         }

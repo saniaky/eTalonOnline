@@ -1,4 +1,4 @@
-package com.etalon.utils;
+package com.etalon.html;
 
 import com.etalon.model.CodexBook;
 import com.google.gson.Gson;
@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Slf4j
-public final class CodexManager {
+public final class CacheManager {
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final String HOME = System.getProperty("user.home");
@@ -35,7 +35,7 @@ public final class CodexManager {
         }
     }
 
-    private CodexManager() {
+    private CacheManager() {
     }
 
     public static Document getCodexHTML(String codexId) throws IOException {

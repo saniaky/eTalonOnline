@@ -2,13 +2,15 @@ package com.etalon.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Пункт статьи (aka ")")
+ * Текстовый элемент
  */
 @Data
 @SuperBuilder
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class Text extends CodexNode {
 
