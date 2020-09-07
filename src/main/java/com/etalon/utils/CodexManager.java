@@ -1,6 +1,6 @@
-package com.company.utils;
+package com.etalon.utils;
 
-import com.company.model.Codex;
+import com.etalon.model.CodexBook;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +60,7 @@ public final class CodexManager {
         writer.close();
     }
 
-    public static void saveCodexJSON(Codex codex) throws IOException {
+    public static void saveCodexJSON(CodexBook codex) throws IOException {
         var path = Paths.get(JSON_PATH, codex.getId() + ".json");
         var writer = new FileWriter(path.toString());
         gson.toJson(codex, writer);
