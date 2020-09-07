@@ -44,8 +44,8 @@ class AppUPKTest {
         CodexNode section6 = part1.getChildren().get(5);
         assertEquals("ИНЫЕ ОБЩИЕ ПОЛОЖЕНИЯ", section6.getTitle());
         assertEquals(3, section6.getChildren().size()); // 3 главы
-        assertEquals("Гражданский иск в уголовном процессе", section6.getChildren().get(0).getTitle());
-        assertEquals("Соединение, выделение и восстановление уголовных дел", section6.getChildren().get(2).getTitle());
+        assertEquals("ГРАЖДАНСКИЙ ИСК В УГОЛОВНОМ ПРОЦЕССЕ", section6.getChildren().get(0).getTitle());
+        assertEquals("СОЕДИНЕНИЕ, ВЫДЕЛЕНИЕ И ВОССТАНОВЛЕНИЕ УГОЛОВНЫХ ДЕЛ", section6.getChildren().get(2).getTitle());
     }
 
     private void part2(CodexBook codex) {
