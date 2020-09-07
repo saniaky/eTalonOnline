@@ -47,7 +47,7 @@ public final class CodexNodeBuilder {
         if (ARTICLE == nodeType) {
             return Article.builder()
                     .id(element.attr("id"))
-                    .title(stripHTML(element.html().split("<br>")[1]))
+                    .title(element.text())
                     .build();
         }
         throw new IllegalArgumentException();

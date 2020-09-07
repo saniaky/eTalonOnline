@@ -79,7 +79,7 @@ public enum CodexNodeType {
             case SECTION:
                 return asList(TEXT, CHAPTER);
             case CHAPTER:
-                return asList(TEXT);
+                return asList(TEXT, ARTICLE);
             case ARTICLE:
                 return asList();
         }
